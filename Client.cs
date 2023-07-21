@@ -32,6 +32,7 @@ namespace SwarmAdvertiser {
         }
 
         public void RequestToken() {
+            Send("Doit");
             Receive();
             client.Close();
         }
