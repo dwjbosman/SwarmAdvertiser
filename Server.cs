@@ -57,7 +57,7 @@ namespace  SwarmAdvertiser
             
             // Send response
             //UdpClient client = new UdpClient(Config.PORT_NUMBER);
-            byte[] response = Encoding.UTF8.GetBytes("Hello from server");
+            byte[] response = Encoding.UTF8.GetBytes(joinToken);
             udp.Send(response, response.Length, ip);
             Console.WriteLine("Sent response to client.");            
         }
@@ -67,7 +67,7 @@ namespace  SwarmAdvertiser
             var swarmParameters = new SwarmInitParameters
             {
                 //AdvertiseAddr = "192.168.1.100:2377", // Replace with your node's IP address and a port
-                ListenAddr = "0.0.0.0:5000", // The listen address (interface and port) for the swarm managers
+                //ListenAddr = "0.0.0.0:5000", // The listen address (interface and port) for the swarm managers
                 ForceNewCluster = false // true to force creating a new swarm, even if one already exists
             };
 

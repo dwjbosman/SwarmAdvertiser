@@ -1,16 +1,23 @@
-using System;
+//using System;
 using System.Net.Sockets;
 using System.Net;
 using System.Text;
-using System.Threading;
+using Docker.DotNet;
+using Docker.DotNet.Models;
+
 
 namespace SwarmAdvertiser {
     class Client
     {
         UdpClient client;
         IPEndPoint ip;
+        DockerClient dockerClient;
+        
+        String joinToken = "";
 
         public Client() {
+            dockerClient = new DockerClientConfiguration().CreateClient();
+
             ip = new IPEndPoint(IPAddress.Any, Config.PORT_NUMBER);
 
             client = new UdpClient();
@@ -26,9 +33,48 @@ namespace SwarmAdvertiser {
         private void Receive()
         {
             byte[] bytes = client.Receive(ref ip);
-            string message = Encoding.ASCII.GetString(bytes);
-            Console.WriteLine("From {0} received: {1} ", ip.Address.ToString(), message);
+            joinToken = Encoding.ASCII.GetString(bytes);
+            Console.WriteLine("From {0} received: {1} ", ip.Address.ToString(), joinToken);
         }
+
+
+        public void JoinDockerSwarm() {
+           // SwarmInitParameters x = new SwarmInitParameters();
+            
+            string managerIp = ip.Address.ToString()+":2377";
+            
+            var swarmParameters = new SwarmJoinParameters
+            {
+                RemoteAddrs = new List<string> { managerIp }, // Replace with your manager's IP address and port
+                //ListenAddr = "0.0.0.0:5000", // The listen address (interface and port) for the node
+                //AdvertiseAddr = "192.168.1.100:2377", // Replace with your node's IP address and a port
+                JoinToken = joinToken // true to force creating a new swarm, even if one already exists
+            };
+
+            try {
+                Task t = dockerClient.Swarm.JoinSwarmAsync(swarmParameters);
+                
+
+                Task task = Task<String>.Run(async () => { await t; });
+                task.Wait();
+
+                Console.WriteLine("Joined");
+            } catch (Docker.DotNet.DockerApiException) {
+                Console.WriteLine("Did not join1");
+            } catch (System.AggregateException) {
+                Console.WriteLine("Did not join2");
+            }
+            /**
+            Task<SwarmInspectResponse> t2 = dockerClient.Swarm.InspectSwarmAsync();
+            Task<SwarmInspectResponse> task2 = Task<SwarmInspectResponse>.Run(async () => { return await t2; });
+            task2.Wait();
+            joinToken = task2.Result.JoinTokens.Worker;
+            Console.WriteLine("Join token:"+joinToken);
+            **/
+
+        }
+
+
 
         private void Send(string message)
         {
