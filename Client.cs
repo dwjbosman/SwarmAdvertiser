@@ -28,6 +28,12 @@ namespace SwarmAdvertiser {
             Send("Doit");
             Receive();
             client.Close();
+            JoinDockerSwarm();
+        }
+
+        public void RequestToken() {
+            Receive();
+            client.Close();
         }
 
         private void Receive()

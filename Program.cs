@@ -15,6 +15,11 @@
                 Client c = new Client();
                 c.Request();
             }
+            if (args[0] == "RequestToken") {
+                Console.WriteLine("Client");
+                Client c = new Client();
+                c.RequestToken();
+            }
         }
     }
 }
