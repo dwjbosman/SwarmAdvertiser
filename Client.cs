@@ -23,16 +23,24 @@ namespace SwarmAdvertiser {
             client = new UdpClient();
 
         }
-        public void Request()
+        public void Request(string ip)
         {
-            Send("Doit");
+            if (ip!="") {
+                Send("Doit",ip);
+            } else {
+                Send("Doit");
+            }
             Receive();
             client.Close();
             JoinDockerSwarm();
         }
 
-        public void RequestToken() {
-            Send("Doit");
+        public void RequestToken(string ip) {
+            if (ip!="") {
+                Send("Doit",ip);
+            } else {
+                Send("Doit");
+            }
             Receive();
             client.Close();
         }
@@ -83,13 +91,13 @@ namespace SwarmAdvertiser {
 
 
 
-        private void Send(string message)
+        private void Send(string message, string destIp="255.255.255.255")
         {
-            IPEndPoint ip = new IPEndPoint(IPAddress.Parse("255.255.255.255"), Config.PORT_NUMBER);
+            IPEndPoint ip = new IPEndPoint(IPAddress.Parse(destIp), Config.PORT_NUMBER);
             byte[] bytes = Encoding.ASCII.GetBytes(message);
             client.Send(bytes, bytes.Length, ip);
             //client.Close();
-            Console.WriteLine("Sent: {0} ", message);
+            Console.WriteLine("Sent: {0}  to {1}", message, ip.Address.ToString());
         }
     }
 }
