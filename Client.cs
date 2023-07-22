@@ -23,16 +23,24 @@ namespace SwarmAdvertiser {
             client = new UdpClient();
 
         }
-        public void Request()
+        public void Request(string ip)
         {
-            Send("Doit");
+            if (ip!="") {
+                Send("Doit",ip);
+            } else {
+                Send("Doit");
+            }
             Receive();
             client.Close();
             JoinDockerSwarm();
         }
 
-        public void RequestToken() {
-            Send("Doit");
+        public void RequestToken(string ip) {
+            if (ip!="") {
+                Send("Doit",ip);
+            } else {
+                Send("Doit");
+            }
             Receive();
             client.Close();
         }
@@ -48,12 +56,12 @@ namespace SwarmAdvertiser {
         public void JoinDockerSwarm() {
            // SwarmInitParameters x = new SwarmInitParameters();
             
-            string managerIp = ip.Address.ToString()+":2377";
+            string managerIp = ip.Address.ToString()+":5000";
             
             var swarmParameters = new SwarmJoinParameters
             {
                 RemoteAddrs = new List<string> { managerIp }, // Replace with your manager's IP address and port
-                //ListenAddr = "0.0.0.0:5000", // The listen address (interface and port) for the node
+                ListenAddr = "0.0.0.0:5000", // The listen address (interface and port) for the node
                 //AdvertiseAddr = "192.168.1.100:2377", // Replace with your node's IP address and a port
                 JoinToken = joinToken // true to force creating a new swarm, even if one already exists
             };
@@ -68,8 +76,8 @@ namespace SwarmAdvertiser {
                 Console.WriteLine("Joined");
             } catch (Docker.DotNet.DockerApiException) {
                 Console.WriteLine("Did not join1");
-            } catch (System.AggregateException) {
-                Console.WriteLine("Did not join2");
+            } catch (System.AggregateException e) {
+                Console.WriteLine("Did not join2:"+e);
             }
             /**
             Task<SwarmInspectResponse> t2 = dockerClient.Swarm.InspectSwarmAsync();
@@ -83,13 +91,13 @@ namespace SwarmAdvertiser {
 
 
 
-        private void Send(string message)
+        private void Send(string message, string destIp="255.255.255.255")
         {
-            IPEndPoint ip = new IPEndPoint(IPAddress.Parse("255.255.255.255"), Config.PORT_NUMBER);
+            IPEndPoint ip = new IPEndPoint(IPAddress.Parse(destIp), Config.PORT_NUMBER);
             byte[] bytes = Encoding.ASCII.GetBytes(message);
             client.Send(bytes, bytes.Length, ip);
             //client.Close();
-            Console.WriteLine("Sent: {0} ", message);
+            Console.WriteLine("Sent: {0}  to {1}", message, ip.Address.ToString());
         }
     }
 }
