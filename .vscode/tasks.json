@@ -9,7 +9,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/swarm_advertiser.csproj",
+                "${workspaceFolder}/SwarmUtil/swarm_advertiser.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -21,7 +21,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/swarm_advertiser.csproj",
+                "${workspaceFolder}/SwarmUtil/swarm_advertiser.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -35,7 +35,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/swarm_advertiser.csproj"
+                "${workspaceFolder}/SwarmUtil/swarm_advertiser.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
