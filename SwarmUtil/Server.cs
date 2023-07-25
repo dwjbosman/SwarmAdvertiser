@@ -66,7 +66,8 @@ namespace  SwarmAdvertiser
            // SwarmInitParameters x = new SwarmInitParameters();
             var swarmParameters = new SwarmInitParameters
             {
-                //AdvertiseAddr = "192.168.1.100:2377", // Replace with your node's IP address and a port
+                AdvertiseAddr = "enp3s0", // Replace with your node's IP address and a port
+                //AdvertiseAddr = "192.168.68.118", // Replace with your node's IP address and a port
                 ListenAddr = "0.0.0.0:5000", // The listen address (interface and port) for the swarm managers
                 ForceNewCluster = false // true to force creating a new swarm, even if one already exists
             };
