@@ -56,13 +56,13 @@ namespace SwarmAdvertiser {
         public void JoinDockerSwarm() {
            // SwarmInitParameters x = new SwarmInitParameters();
             
-            string managerIp = ip.Address.ToString()+":2377";
+            string managerIp = ip.Address.ToString()+":5000";
             
             var swarmParameters = new SwarmJoinParameters
             {
                 RemoteAddrs = new List<string> { managerIp }, // Replace with your manager's IP address and port
-                //ListenAddr = "0.0.0.0:5000", // The listen address (interface and port) for the node
-                //AdvertiseAddr = "192.168.1.100:2377", // Replace with your node's IP address and a port
+                ListenAddr = "0.0.0.0:5000", // The listen address (interface and port) for the node
+                AdvertiseAddr = "192.168.68.115", // Replace with your node's IP address and a port
                 JoinToken = joinToken // true to force creating a new swarm, even if one already exists
             };
 
@@ -76,8 +76,8 @@ namespace SwarmAdvertiser {
                 Console.WriteLine("Joined");
             } catch (Docker.DotNet.DockerApiException) {
                 Console.WriteLine("Did not join1");
-            } catch (System.AggregateException) {
-                Console.WriteLine("Did not join2");
+            } catch (System.AggregateException e) {
+                Console.WriteLine("Did not join2:"+e);
             }
             /**
             Task<SwarmInspectResponse> t2 = dockerClient.Swarm.InspectSwarmAsync();
