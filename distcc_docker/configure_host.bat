@@ -6,10 +6,11 @@ netsh advfirewall firewall add rule name="swarm_dns_udp" dir=in action=allow pro
 netsh advfirewall firewall add rule name="cluster_management" dir=in action=allow protocol=UDP localport=2377
 netsh advfirewall firewall add rule name="cluster_management" dir=in action=allow protocol=TCP localport=2377
 
-netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=7946 connectaddress=$(wsl hostname -I) connectport=7946
-netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=53 connectaddress=$(wsl hostname -I) connectport=53
-netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=2377 connectaddress=$(wsl hostname -I) connectport=2377
-
 $wslip = ((wsl hostname -I) -split " ")[0]
+
+netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=7946 connectaddress=$wslip connectport=7946
+netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=53 connectaddress=$wslip connectport=53
+netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=2377 connectaddress=$wslip connectport=2377
+
 
 dotnet run 192.168.68.115 $wslip 7946 4789 2377 53
