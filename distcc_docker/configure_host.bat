@@ -10,3 +10,6 @@ netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=7946 conne
 netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=53 connectaddress=$(wsl hostname -I) connectport=53
 netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=2377 connectaddress=$(wsl hostname -I) connectport=2377
 
+$wslip = ((wsl hostname -I) -split " ")[0]
+
+dotnet run 192.168.68.115 $wslip 7946 4789 2377 53
