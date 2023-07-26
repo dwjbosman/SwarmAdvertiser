@@ -7,6 +7,7 @@ using System.Text;
 public struct UdpState
 {
     public UdpClient server;
+    public UdpClient client;
     //public IPEndPoint e;
     public int index;
     public IPEndPoint SendIP;
@@ -24,10 +25,11 @@ public class UDPPortForwarder {
             
             
             UdpState s = new UdpState();
-            s.server = new UdpClient(ListenIp);
             s.index = i;
             s.ReceiveIP = ListenIp;
+            s.server = new UdpClient(s.ReceiveIP);
             s.SendIP = new IPEndPoint(IPAddress.Parse(SendAddress),ports[i]);
+            s.client = new UdpClient();
             states.Add(s);
 
             Console.WriteLine($"Forward messages from {s.ReceiveIP.ToString()} to {s.SendIP.ToString()}");
@@ -59,12 +61,16 @@ public class UDPPortForwarder {
         byte[] receiveBytes = server.EndReceive(ar, ref ReceivedFromIP);
 
         if (ReceivedFromIP!=null) {
-            Console.WriteLine($"Received message on {ReceiveIP.ToString()} from: {ReceivedFromIP.ToString()}, forward to {SendIP.ToString()}");
+            Console.WriteLine($"Received message on {ReceiveIP.ToString()}, {receiveBytes.Length} from: {ReceivedFromIP.ToString()}, forward to {SendIP.ToString()}");
         } else {
             Console.WriteLine($"Received message on {ReceiveIP.ToString()}, forward to {SendIP.ToString()}");
         }
-        server.SendAsync(receiveBytes,SendIP);
-        server.BeginReceive(new AsyncCallback(ReceiveCallback), s);
+	s.client.SendAsync(receiveBytes,receiveBytes.Length,SendIP);
+	//int sent = server.Send(receiveBytes,receiveBytes.Length,SendIP);
+	//int sent = sender.Send(receiveBytes,receiveBytes.Length,SendIP);
+        //Console.WriteLine($"Bytes sent {sent}");
+        
+	server.BeginReceive(new AsyncCallback(ReceiveCallback), s);
 
     }   
 }
