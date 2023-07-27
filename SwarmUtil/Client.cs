@@ -4,7 +4,7 @@ using System.Net;
 using System.Text;
 using Docker.DotNet;
 using Docker.DotNet.Models;
-
+using System.Diagnostics;
 
 namespace SwarmAdvertiser {
     class Client
@@ -50,19 +50,30 @@ namespace SwarmAdvertiser {
             byte[] bytes = client.Receive(ref ip);
             joinToken = Encoding.ASCII.GetString(bytes);
             Console.WriteLine("From {0} received: {1} ", ip.Address.ToString(), joinToken);
-        }
+    	}
 
 
         public void JoinDockerSwarm() {
            // SwarmInitParameters x = new SwarmInitParameters();
-            
+
             string managerIp = ip.Address.ToString()+":5000";
             
+	    var cliProcess = new Process() {
+		    StartInfo = new ProcessStartInfo("./get_win_host_ip.sh", ip.Address.ToString()) {
+			    UseShellExecute = false, RedirectStandardOutput = true
+		    }
+	    };
+	    cliProcess.Start();
+	    string localIp = cliProcess.StandardOutput.ReadToEnd();
+	    cliProcess.WaitForExit();
+	    cliProcess.Close();
+
+	    Console.WriteLine("Join {0} from client {1}", managerIp, localIp); 
             var swarmParameters = new SwarmJoinParameters
             {
                 RemoteAddrs = new List<string> { managerIp }, // Replace with your manager's IP address and port
                 ListenAddr = "0.0.0.0:5000", // The listen address (interface and port) for the node
-                AdvertiseAddr = "192.168.68.115", // Replace with your node's IP address and a port
+                AdvertiseAddr = localIp, // Replace with your node's IP address and a port
                 JoinToken = joinToken // true to force creating a new swarm, even if one already exists
             };
 
