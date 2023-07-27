@@ -65,12 +65,8 @@ public class UDPPortForwarder {
         } else {
             Console.WriteLine($"Received message on {ReceiveIP.ToString()}, forward to {SendIP.ToString()}");
         }
-	s.client.SendAsync(receiveBytes,receiveBytes.Length,SendIP);
-	//int sent = server.Send(receiveBytes,receiveBytes.Length,SendIP);
-	//int sent = sender.Send(receiveBytes,receiveBytes.Length,SendIP);
-        //Console.WriteLine($"Bytes sent {sent}");
-        
-	server.BeginReceive(new AsyncCallback(ReceiveCallback), s);
+	    s.client.SendAsync(receiveBytes,receiveBytes.Length,SendIP);
+	    s.server.BeginReceive(new AsyncCallback(ReceiveCallback), s);
 
     }   
 }
