@@ -62,7 +62,7 @@ namespace SwarmAdvertiser {
             {
                 RemoteAddrs = new List<string> { managerIp }, // Replace with your manager's IP address and port
                 ListenAddr = "0.0.0.0:5000", // The listen address (interface and port) for the node
-                AdvertiseAddr = "192.168.68.115", // Replace with your node's IP address and a port
+                AdvertiseAddr = "192.168.68.124", // Replace with your node's IP address and a port
                 JoinToken = joinToken // true to force creating a new swarm, even if one already exists
             };
 

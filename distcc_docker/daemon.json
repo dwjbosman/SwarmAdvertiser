@@ -1,0 +1,8 @@
+{
+	  "default-address-pools":
+	    [
+		{"base":"10.10.0.0/16","size":24}
+	    ],
+  "registry-mirrors": ["https://192.168.68.130:6088"],
+  "insecure-registries": ["https://192.168.68.130:6088"]
+}
